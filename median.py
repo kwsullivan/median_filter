@@ -63,57 +63,77 @@ def make_array_by_pixel(path):
     green_channel_by_pixel = [[]]*num_pixels
     red_channel_by_pixel = [[]]*num_pixels
 
-    for temp_file in file_array:
-        img = cv2.imread(path + temp_file)
+    # where frame is a single image in a sequence
+    for frame in file_array:
+        img = cv2.imread(path + frame)
         blue, green, red = cv2.split(img)
 
-        curr = 0
-        for pixel in blue:
-            blue_channel_by_pixel[curr].append(pixel)
-            curr += 1
+        current_pixel = 0
+        for column in blue:
+            for pixel in column:
+                #print(pixel)
+                blue_channel_by_pixel[current_pixel].append(pixel)
+                print(blue_channel_by_pixel[current_pixel])
+                print("")
+                current_pixel += 1
+            print("zero")
+            print(blue_channel_by_pixel[0])
+            exit()
 
-        curr = 0
-        for pixel in green:
-            green_channel_by_pixel[curr].append(pixel)
-            curr += 1
+        print(current_pixel)    
+        print("dont")
+        print(blue_channel_by_pixel)
+        exit()
+        current_pixel = 0
+        for column in green:
+            for pixel in column:
+                green_channel_by_pixel[current_pixel].append(pixel)
+                current_pixel += 1
 
-        curr = 0
-        for pixel in red:
-            red_channel_by_pixel[curr].append(pixel)
-            curr += 1
+        current_pixel = 0
+        for column in red:
+            for pixel in column:
+                red_channel_by_pixel[current_pixel].append(pixel)
+                current_pixel += 1
 
+    print("organized pixels")
     blue_medians = []
     for pixel in blue_channel_by_pixel:
+        print(pixel)
+        exit()
+        pixel = np.sort(pixel)
         med = np.median(pixel, axis=0)
         blue_medians.append(med)
 
+    print(blue_channel_by_pixel)
+    exit()
+
     green_medians = []
     for pixel in green_channel_by_pixel:
+        pixel = np.sort(pixel)
         med = np.median(pixel, axis=0)
         green_medians.append(med)
 
     red_medians = []
     for pixel in red_channel_by_pixel:
+        pixel = np.sort(pixel)
         med = np.median(pixel, axis=0)
         red_medians.append(med)
 
+    print("got medians")
     img_array = []
-    curr = 0
-    for pixel in blue_channel_by_pixel: #just need to go through ea. pixel
-        img_array.extend(red_channel_by_pixel[curr])
-        img_array.extend(blue_channel_by_pixel[curr])
-        img_array.extend(green_channel_by_pixel[curr])
-
+    img_array = cv2.merge((blue_medians, green_medians, red_medians))
+    print("image array created")
     return img_array
 
-"""
-NOTE: make_array_by_pixel currently throws a MemoryError cus she's TOO BIG
+"""NOTE: make_array_by_pixel currently throws a MemoryError cus she's TOO BIG"""
 image_array = make_array_by_pixel('./image_sequences/phone/')
-image_array = bytes(image_array)
-final = Image.frombytes('RGB', (100, 360), image_array)
-cv2.imwrite('test3.jpg', final)"""
+# print(image_array)
+# image_array = bytes(image_array)
+# final = Image.frombytes('RGB', (270, 180), image_array)
+cv2.imwrite('test3.jpg', image_array)
 
-image_array = make_array('./image_sequences/phone/')
+"""image_array = make_array('./image_sequences/phone/')
 # print(image_array)
 image_array = np.asarray(image_array)
 # image_array.sort(axis=0)
@@ -125,4 +145,4 @@ image_array.append(med)
 # np.append(image_array, med, axis=0)
 # ^ this is my attempt to fix it (doesn't work)
 med = np.median(image_array)
-cv2.imwrite('./results/test7.jpg', med)
+cv2.imwrite('./results/test7.jpg', med)"""
