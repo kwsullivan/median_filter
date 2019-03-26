@@ -126,23 +126,35 @@ def make_array_by_pixel(path):
     print("image array created")
     return img_array
 
-"""NOTE: make_array_by_pixel currently throws a MemoryError cus she's TOO BIG"""
-image_array = make_array_by_pixel('./image_sequences/phone/')
-# print(image_array)
-# image_array = bytes(image_array)
-# final = Image.frombytes('RGB', (270, 180), image_array)
-cv2.imwrite('test3.jpg', image_array)
+def align_image(path, original, transform):
+    #original = cv2.imread(path + original_file)
+    #transform = cv2.imread(path + transform_file)
 
-"""image_array = make_array('./image_sequences/phone/')
-# print(image_array)
-image_array = np.asarray(image_array)
-# image_array.sort(axis=0)
-# ^ shouldn't we be sorting the values before getting the median?
+    original_gray = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
+    transform_gray = cv2.cvtColor(transform, cv2.COLOR_BGR2GRAY)
+    
+    size = original.shape
+    
+    warp_mode = cv2.MOTION_TRANSLATION # Translation not homography
+
+    warp_matrix = np.eye(2, 3, dtype=np.float32)
+
+    number_of_iterations = 5000;
+    termination_eps = 1e-10;
+    criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, number_of_iterations,  termination_eps)
+    (cc, warp_matrix) = cv2.findTransformECC (original_gray,transform_gray, warp_matrix, warp_mode, criteria)
+    
+    transform_aligned = cv2.warpAffine(transform, warp_matrix, (size[1],size[0]), flags=cv2.INTER_LINEAR + cv2.WARP_INVERSE_MAP);
+    cv2.imwrite(path + 'aligned/' + transform_file)
+
+    """# Show final results
+    cv2.imshow("Image 1", original)
+    cv2.imshow("Aligned Image 2", transform_aligned)
+    cv2.waitKey(0)"""
+
+"""image_array = np.asarray(image_array)
 med = np.median(image_array, axis=0)
-image_array.append(med)
-# ^ this is where i get an AttributeError: 'numpy.ndarray' object has no attribute 'append'
-#   results in 'results' were computed when line 120 is commented out
-# np.append(image_array, med, axis=0)
-# ^ this is my attempt to fix it (doesn't work)
-med = np.median(image_array)
-cv2.imwrite('./results/test7.jpg', med)"""
+#image_array.append(med)
+#med = np.median(image_array)
+cv2.imwrite('./results/test11.jpg', med)
+"""
