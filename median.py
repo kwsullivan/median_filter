@@ -5,16 +5,18 @@ import numpy as np
 import cv2
 from PIL import Image
 
-def make_sequence(path, output_file):
-    """ NOTE: function is retired
-    Takes a series of images from a path and creates an mp4 with the output_file name"""
-
+def get_files(path):
     file_array = []
     for filename in os.listdir(path):
         if filename != '.DS_Store':
             file_array.append(filename)
 
     file_array.sort()
+    return file_array
+
+def make_sequence(path, output_file):
+
+    file_array = get_files(path)
 
     img_array = []
 
@@ -126,9 +128,10 @@ def make_array_by_pixel(path):
     print("image array created")
     return img_array
 
-def align_image(path, original, transform, transform_file):
-    #original = cv2.imread(path + original_file)
-    #transform = cv2.imread(path + transform_file)
+def align_image(original_path, aligned_path, original_file, transform_file, new_file):
+
+    original = cv2.imread(original_path + original_file)
+    transform = cv2.imread(original_path + transform_file)
 
     original_gray = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
     transform_gray = cv2.cvtColor(transform, cv2.COLOR_BGR2GRAY)
@@ -141,18 +144,32 @@ def align_image(path, original, transform, transform_file):
 
     number_of_iterations = 5000;
     termination_eps = 1e-10;
-    criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, number_of_iterations,  termination_eps)
-    (cc, warp_matrix) = cv2.findTransformECC (original_gray,transform_gray, warp_matrix, warp_mode, criteria)
+    criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, number_of_iterations, termination_eps)
+    cc, warp_matrix = cv2.findTransformECC (original_gray, transform_gray, warp_matrix, warp_mode, criteria)
     
-    transform_aligned = cv2.warpAffine(transform, warp_matrix, (size[1],size[0]), flags=cv2.INTER_LINEAR + cv2.WARP_INVERSE_MAP);
-    cv2.imwrite(path + 'aligned/' + transform_file, transform_aligned)
+    transform_aligned = cv2.warpAffine(transform, warp_matrix, (size[1], size[0]), flags=cv2.INTER_LINEAR + cv2.WARP_INVERSE_MAP);
+    cv2.imwrite(aligned_path + new_file, transform_aligned)
+    print(aligned_path + new_file)
 
     """# Show final results
     cv2.imshow("Image 1", original)
     cv2.imshow("Aligned Image 2", transform_aligned)
     cv2.waitKey(0)"""
-image_array = make_array('./image_sequences/drink_shake/')
-align_image('./image_sequences/', image_array[0], image_array[1], 'aligned.jpg')
+#image_array = make_array('./image_sequences/drink_shake/')
+
+file_array = get_files('./image_sequences/drink_shake/')
+
+base_file = file_array[0]
+counter = 1
+for file in file_array:
+    output = 'aligned_' + str(counter) + '.jpg'
+    if file is not base_file:
+        align_image('./image_sequences/drink_shake/', './image_sequences/aligned/drink_shake/', base_file, file, output)
+    else:
+        original = cv2.imread('./image_sequences/drink_shake/' + base_file)
+        print('./image_sequences/aligned/drink_shake/' + output)
+        cv2.imwrite('./image_sequences/aligned/drink_shake/' + output, original)
+    counter += 1
 
 """image_array = np.asarray(image_array)
 med = np.median(image_array, axis=0)
