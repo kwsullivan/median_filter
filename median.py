@@ -22,14 +22,16 @@ def make_sequence(path, output_file):
 
     for file in file_array:
         img = cv2.imread(path + file)
-        width, height = img.shape
+        width, height, channels = img.shape
         size = (width, height)
         img_array.append(img)
 
     out = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'mp4v'), 1, size)
     print('Number of images:', len(img_array))
-    for i in enumerate(img_array):
-        out.write(img_array[i])
+    for curr in img_array:
+        out.write(curr)
+    """for i in enumerate(img_array):
+        out.write(img_array[i])"""
 
 def make_array(path):
     """creates an image array based on a provided directory"""
@@ -43,8 +45,8 @@ def make_array(path):
 
     for file_name in file_array:
         img = cv2.imread(path + file_name)
-        width, height, channels = img.shape
-        size = (width, height)
+        #width, height, channels = img.shape
+        #size = (width, height)
         img_array.append(img)
     return img_array
 
@@ -157,23 +159,26 @@ def align_image(original_path, aligned_path, original_file, transform_file, new_
     cv2.waitKey(0)"""
 #image_array = make_array('./image_sequences/drink_shake/')
 
-file_array = get_files('./image_sequences/drink_shake/')
+make_sequence('./image_sequences/coffee_large/', 'coffee_video.mp4')
+
+"""file_array = get_files('./image_sequences/coffee_few/')
 
 base_file = file_array[0]
 counter = 1
 for file in file_array:
     output = 'aligned_' + str(counter) + '.jpg'
     if file is not base_file:
-        align_image('./image_sequences/drink_shake/', './image_sequences/aligned/drink_shake/', base_file, file, output)
+        align_image('./image_sequences/coffee_few/', './image_sequences/aligned/coffee_few/', base_file, file, output)
     else:
-        original = cv2.imread('./image_sequences/drink_shake/' + base_file)
-        print('./image_sequences/aligned/drink_shake/' + output)
-        cv2.imwrite('./image_sequences/aligned/drink_shake/' + output, original)
+        original = cv2.imread('./image_sequences/coffee_few/' + base_file)
+        print('./image_sequences/aligned/coffee_few/' + output)
+        cv2.imwrite('./image_sequences/aligned/coffee_few/' + output, original)
     counter += 1
+image_array = make_array('./image_sequences/aligned/coffee_few/')"""
 
-"""image_array = np.asarray(image_array)
+"""image_array = make_array('./image_sequences/aligned/coffee_large/')
+image_array = np.asarray(image_array)
 med = np.median(image_array, axis=0)
 #image_array.append(med)
 #med = np.median(image_array)
-cv2.imwrite('./results/test11.jpg', med)
-"""
+cv2.imwrite('./results/coffee_13_frames.jpg', med)"""

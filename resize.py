@@ -2,7 +2,7 @@
 import os
 from PIL import Image
 
-PATH = "./image_sequences/zoom/"
+PATH = "./image_sequences/glasses/"
 
 FILE_ARRAY = []
 for filename in os.listdir(PATH):
