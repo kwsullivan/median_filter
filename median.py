@@ -126,7 +126,7 @@ def make_array_by_pixel(path):
     print("image array created")
     return img_array
 
-def align_image(path, original, transform):
+def align_image(path, original, transform, transform_file):
     #original = cv2.imread(path + original_file)
     #transform = cv2.imread(path + transform_file)
 
@@ -145,12 +145,14 @@ def align_image(path, original, transform):
     (cc, warp_matrix) = cv2.findTransformECC (original_gray,transform_gray, warp_matrix, warp_mode, criteria)
     
     transform_aligned = cv2.warpAffine(transform, warp_matrix, (size[1],size[0]), flags=cv2.INTER_LINEAR + cv2.WARP_INVERSE_MAP);
-    cv2.imwrite(path + 'aligned/' + transform_file)
+    cv2.imwrite(path + 'aligned/' + transform_file, transform_aligned)
 
     """# Show final results
     cv2.imshow("Image 1", original)
     cv2.imshow("Aligned Image 2", transform_aligned)
     cv2.waitKey(0)"""
+image_array = make_array('./image_sequences/drink_shake/')
+align_image('./image_sequences/', image_array[0], image_array[1], 'aligned.jpg')
 
 """image_array = np.asarray(image_array)
 med = np.median(image_array, axis=0)
