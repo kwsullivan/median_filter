@@ -6,6 +6,7 @@ import cv2
 from PIL import Image
 
 def get_files(path):
+    """retrieves all the files needed for processing from the path"""
     file_array = []
     for filename in os.listdir(path):
         if filename != '.DS_Store':
@@ -15,7 +16,7 @@ def get_files(path):
     return file_array
 
 def make_sequence(path, output_file):
-
+    """make sequence creates a sequence of images"""
     file_array = get_files(path)
 
     img_array = []
@@ -131,24 +132,24 @@ def make_array_by_pixel(path):
     return img_array
 
 def align_image(original_path, aligned_path, original_file, transform_file, new_file):
-
+    """aligns a given image"""
     original = cv2.imread(original_path + original_file)
     transform = cv2.imread(original_path + transform_file)
 
     original_gray = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
     transform_gray = cv2.cvtColor(transform, cv2.COLOR_BGR2GRAY)
-    
+
     size = original.shape
-    
+
     warp_mode = cv2.MOTION_TRANSLATION # Translation not homography
 
     warp_matrix = np.eye(2, 3, dtype=np.float32)
 
-    number_of_iterations = 5000;
-    termination_eps = 1e-10;
+    number_of_iterations = 5000
+    termination_eps = 1e-10
     criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, number_of_iterations, termination_eps)
-    cc, warp_matrix = cv2.findTransformECC (original_gray, transform_gray, warp_matrix, warp_mode, criteria)
-    
+    cc, warp_matrix = cv2.findTransformECC(original_gray, transform_gray, warp_matrix, warp_mode, criteria)
+
     transform_aligned = cv2.warpAffine(transform, warp_matrix, (size[1], size[0]), flags=cv2.INTER_LINEAR + cv2.WARP_INVERSE_MAP);
     cv2.imwrite(aligned_path + new_file, transform_aligned)
     print(aligned_path + new_file)
@@ -157,28 +158,25 @@ def align_image(original_path, aligned_path, original_file, transform_file, new_
     cv2.imshow("Image 1", original)
     cv2.imshow("Aligned Image 2", transform_aligned)
     cv2.waitKey(0)"""
-#image_array = make_array('./image_sequences/drink_shake/')
 
-make_sequence('./image_sequences/coffee_large/', 'coffee_video.mp4')
-
-"""file_array = get_files('./image_sequences/coffee_few/')
+## START IMAGE ALIGNMENT
+file_array = get_files('./image_sequences/kirby/') #all of the files we need
 
 base_file = file_array[0]
 counter = 1
-for file in file_array:
+for file in file_array: #align each file
     output = 'aligned_' + str(counter) + '.jpg'
-    if file is not base_file:
-        align_image('./image_sequences/coffee_few/', './image_sequences/aligned/coffee_few/', base_file, file, output)
+    if file is not base_file: #the base file sets the standard for alignment
+        align_image('./image_sequences/kirby/', './image_sequences/aligned/kirby/', base_file, file, output)
     else:
-        original = cv2.imread('./image_sequences/coffee_few/' + base_file)
-        print('./image_sequences/aligned/coffee_few/' + output)
-        cv2.imwrite('./image_sequences/aligned/coffee_few/' + output, original)
+        original = cv2.imread('./image_sequences/kirby/' + base_file)
+        print('./image_sequences/aligned/kirby/' + output)
+        cv2.imwrite('./image_sequences/aligned/kirby/' + output, original)
     counter += 1
-image_array = make_array('./image_sequences/aligned/coffee_few/')"""
+image_array = make_array('./image_sequences/aligned/kirby/')
+## END IMAGE ALIGNMENT
 
-"""image_array = make_array('./image_sequences/aligned/coffee_large/')
+#image_array = make_array('./image_sequences/kirby/')
 image_array = np.asarray(image_array)
 med = np.median(image_array, axis=0)
-#image_array.append(med)
-#med = np.median(image_array)
-cv2.imwrite('./results/coffee_13_frames.jpg', med)"""
+cv2.imwrite('./results/kirby-euclidean-align.jpg', med)
