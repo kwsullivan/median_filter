@@ -3,7 +3,7 @@
 import os
 import numpy as np
 import cv2
-from PIL import Image
+import crop
 
 def get_files(path):
     """retrieves all the files needed for processing from the path"""
