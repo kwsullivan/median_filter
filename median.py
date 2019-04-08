@@ -3,7 +3,8 @@
 import os
 import numpy as np
 import cv2
-from colour import colour_correction
+from crop import crop
+from compare import compare_diff
 
 def get_files(path):
     """retrieves all the files needed for processing from the path"""
@@ -51,86 +52,6 @@ def make_array(path):
         img_array.append(img)
     return img_array
 
-def make_array_by_pixel(path):
-    """creates an image array based on a provided directory"""
-    file_array = []
-    img_array = []
-    for filename in os.listdir(path):
-        if filename != '.DS_Store':
-            file_array.append(filename)
-
-    file_array.sort()
-
-    temp = cv2.imread(path + file_array[0])
-    num_pixels = temp.size
-
-    blue_channel_by_pixel = [[]]*num_pixels
-    green_channel_by_pixel = [[]]*num_pixels
-    red_channel_by_pixel = [[]]*num_pixels
-
-    # where frame is a single image in a sequence
-    for frame in file_array:
-        img = cv2.imread(path + frame)
-        blue, green, red = cv2.split(img)
-
-        current_pixel = 0
-        for column in blue:
-            for pixel in column:
-                #print(pixel)
-                blue_channel_by_pixel[current_pixel].append(pixel)
-                print(blue_channel_by_pixel[current_pixel])
-                print("")
-                current_pixel += 1
-            print("zero")
-            print(blue_channel_by_pixel[0])
-            exit()
-
-        print(current_pixel)    
-        print("dont")
-        print(blue_channel_by_pixel)
-        exit()
-        current_pixel = 0
-        for column in green:
-            for pixel in column:
-                green_channel_by_pixel[current_pixel].append(pixel)
-                current_pixel += 1
-
-        current_pixel = 0
-        for column in red:
-            for pixel in column:
-                red_channel_by_pixel[current_pixel].append(pixel)
-                current_pixel += 1
-
-    print("organized pixels")
-    blue_medians = []
-    for pixel in blue_channel_by_pixel:
-        print(pixel)
-        exit()
-        pixel = np.sort(pixel)
-        med = np.median(pixel, axis=0)
-        blue_medians.append(med)
-
-    print(blue_channel_by_pixel)
-    exit()
-
-    green_medians = []
-    for pixel in green_channel_by_pixel:
-        pixel = np.sort(pixel)
-        med = np.median(pixel, axis=0)
-        green_medians.append(med)
-
-    red_medians = []
-    for pixel in red_channel_by_pixel:
-        pixel = np.sort(pixel)
-        med = np.median(pixel, axis=0)
-        red_medians.append(med)
-
-    print("got medians")
-    img_array = []
-    img_array = cv2.merge((blue_medians, green_medians, red_medians))
-    print("image array created")
-    return img_array
-
 def align_image(original_path, aligned_path, original_file, transform_file, new_file):
     """aligns a given image"""
     original = cv2.imread(original_path + original_file)
@@ -173,11 +94,13 @@ for file in file_array: #align each file
         print('./image_sequences/aligned/kirby/' + output)
         cv2.imwrite('./image_sequences/aligned/kirby/' + output, original)
     counter += 1
-image_array = make_array('./image_sequences/aligned/kirby/')"""
-## END IMAGE ALIGNMENT
 
 image_array = make_array('./image_sequences/aligned/kirby/')
-image_array = np.asarray(image_array)
 med = np.median(image_array, axis=0)
-colour_correction(med)
-cv2.imwrite('./results/kirby_align_for_colour.jpg', med)
+cv2.imwrite('median.jpg', med)
+## END IMAGE ALIGNMENT
+cropped = crop('./median.jpg')
+correct = cv2.normalize(cropped, None, alpha=50, beta=205, norm_type=cv2.NORM_MINMAX)
+cv2.imwrite('cropped.jpg', correct)"""
+
+compare_diff('truth.jpg', 'image2.jpg')
