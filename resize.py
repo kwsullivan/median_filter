@@ -1,8 +1,9 @@
 """simple script to resize images"""
 import os
 import cv2
-
-PATH = "./image_sequences/kirby/"
+import sys
+#PATH = "./image_sequences/kirby/"
+PATH = sys.argv[1]
 FILE_ARRAY = []
 for filename in os.listdir(PATH):
     if filename != '.DS_Store':

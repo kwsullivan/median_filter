@@ -17,5 +17,9 @@ The following program will use median filtering to remove undesired moving objec
 | tiger | none | none | 6 |
 | bottle | none | severe | 6 |
 | mccafe | severe | severe | 6 |
+| donald_level1 | none | none | 6 |
+| donald_level2 | none | some overlap | 6 |
+| donald_level3 | none | some overlap | 12 |
+| wallet | some | some overlap | 5 |
 
 Note: there are additional frames for kirby, tiger, and mccafe

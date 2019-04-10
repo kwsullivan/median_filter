@@ -1,10 +1,9 @@
 """applies the median filtering algorithm to a series of images
     to eliminate unwanted moving artifacts"""
 import os
+import sys
 import numpy as np
 import cv2
-from crop import crop
-from compare import compare_diff
 
 def get_files(path):
     """retrieves all the files needed for processing from the path"""
@@ -44,12 +43,13 @@ def make_array(path):
             file_array.append(filename)
 
     file_array.sort()
-
+    
     for file_name in file_array:
         img = cv2.imread(path + file_name)
         #width, height, channels = img.shape
         #size = (width, height)
         img_array.append(img)
+        
     return img_array
 
 def align_image(original_path, aligned_path, original_file, transform_file, new_file):
@@ -75,32 +75,41 @@ def align_image(original_path, aligned_path, original_file, transform_file, new_
     cv2.imwrite(aligned_path + new_file, transform_aligned)
     print(aligned_path + new_file)
 
-    """# Show final results
-    cv2.imshow("Image 1", original)
-    cv2.imshow("Aligned Image 2", transform_aligned)
-    cv2.waitKey(0)"""
+
+print(sys.argv[1]) # SEQUENCE PATH
+print(sys.argv[2]) # ALIGNED PATH
+print(sys.argv[3]) # OUTPUT NAME
+print(sys.argv[4]) # POST PROCESSED OUTPUT NAME
+print(sys.argv[5]) # BOOLEAN ALIGN
+
+if(sys.argv[5] == "align=true"):
+    align = True
+else:
+    align = False
+print(sys.argv[5])
+print(align)
 
 ## START IMAGE ALIGNMENT
-"""file_array = get_files('./image_sequences/kirby/') #all of the files we need
+file_array = get_files(sys.argv[1]) #all of the files we need
 
 base_file = file_array[0]
 counter = 1
-for file in file_array: #align each file
-    output = 'aligned_' + str(counter) + '.jpg'
-    if file is not base_file: #the base file sets the standard for alignment
-        align_image('./image_sequences/kirby/', './image_sequences/aligned/kirby/', base_file, file, output)
-    else:
-        original = cv2.imread('./image_sequences/kirby/' + base_file)
-        print('./image_sequences/aligned/kirby/' + output)
-        cv2.imwrite('./image_sequences/aligned/kirby/' + output, original)
-    counter += 1
+if align is True:
+    print('aligning...')
+    for file in file_array: #align each file
+        output = 'aligned_' + str(counter) + '.jpg'
+        if file is not base_file: #the base file sets the standard for alignment
+            align_image(sys.argv[1], sys.argv[2], base_file, file, output)
+        else:
+            original = cv2.imread(sys.argv[1] + base_file)
+            print(sys.argv[2] + output)
+            cv2.imwrite(sys.argv[2] + output, original)
+        counter += 1
 
-image_array = make_array('./image_sequences/aligned/kirby/')
+    image_array = make_array(sys.argv[2])
+else:
+    image_array = make_array(sys.argv[1])
+
 med = np.median(image_array, axis=0)
-cv2.imwrite('median.jpg', med)
+cv2.imwrite(sys.argv[3], med)
 ## END IMAGE ALIGNMENT
-cropped = crop('./median.jpg')
-correct = cv2.normalize(cropped, None, alpha=50, beta=205, norm_type=cv2.NORM_MINMAX)
-cv2.imwrite('cropped.jpg', correct)"""
-
-compare_diff('truth.jpg', 'image2.jpg')
