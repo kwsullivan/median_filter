@@ -21,17 +21,17 @@ def crop(image):
 
     return cropped
 
- # Removes the black bars bordering the image by cropping the image
+""" # Removes the black bars bordering the image by cropping the image
 cropped = crop(sys.argv[1])
 # Normalizes the pixel intensities in the image to produce a more appealing output
 correct = cv2.normalize(cropped, None, alpha=50, beta=205, norm_type=cv2.NORM_MINMAX)
-"""new_image = np.zeros(correct.shape, correct.dtype)
+new_image = np.zeros(correct.shape, correct.dtype)
 alpha = 1.8
 beta = -50
 for y in range(correct.shape[0]):
     for x in range(correct.shape[1]):
         for c in range(correct.shape[2]):
-            new_image[y,x,c] = np.clip(alpha*correct[y,x,c] + beta, 0, 255)"""
+            new_image[y,x,c] = np.clip(alpha*correct[y,x,c] + beta, 0, 255)
 
 #correct = cv2.addWeighted(correct, 30, np.zeros(correct.shape, correct.dtype), 0, 0)
-cv2.imwrite(sys.argv[2], cropped)
+cv2.imwrite(sys.argv[2], cropped)"""

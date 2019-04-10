@@ -4,6 +4,7 @@ import os
 import sys
 import numpy as np
 import cv2
+from crop import crop
 
 def get_files(path):
     """retrieves all the files needed for processing from the path"""
@@ -113,3 +114,21 @@ else:
 med = np.median(image_array, axis=0)
 cv2.imwrite(sys.argv[3], med)
 ## END IMAGE ALIGNMENT
+
+# Removes the black bars bordering the image by cropping the image
+if align is True:
+    cropped = crop(sys.argv[3])
+else:
+    cropped = cv2.imread(sys.argv[3])
+# Normalizes the pixel intensities in the image to produce a more appealing output
+correct = cv2.normalize(cropped, None, alpha=50, beta=205, norm_type=cv2.NORM_MINMAX)
+new_image = np.zeros(correct.shape, correct.dtype)
+alpha = 1.8
+beta = -50
+for y in range(correct.shape[0]):
+    for x in range(correct.shape[1]):
+        for c in range(correct.shape[2]):
+            new_image[y,x,c] = np.clip(alpha*correct[y,x,c] + beta, 0, 255)
+
+#correct = cv2.addWeighted(correct, 30, np.zeros(correct.shape, correct.dtype), 0, 0)
+cv2.imwrite(sys.argv[4], cropped)
