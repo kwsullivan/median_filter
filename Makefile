@@ -29,11 +29,16 @@ kirby:
 mccafe: 
 	$(COMPILER) $(PROGRAM) ./image_sequences/mccafe/ ./image_sequences/aligned/mccafe/ ./results/median_filter/mccafe.jpg ./results/post_processed/mccafe_post.jpg align=true
 phone: 
-	$(COMPILER) $(PROGRAM) ./image_sequences/phone/ ./image_sequences/aligned/phone/ ./results/median_filter/phone.jpg ./results/post_processed/phone_post.jpg align=true
+	$(COMPILER) $(PROGRAM) ./image_sequences/phone/ ./image_sequences/aligned/phone/ ./results/median_filter/phone.jpg ./results/post_processed/phone_post.jpg align=false
+phone_added: 
+	$(COMPILER) $(PROGRAM) ./image_sequences/phone_added/ ./image_sequences/aligned/phone_added/ ./results/median_filter/phone_added.jpg ./results/post_processed/phone_added_post.jpg align=false
+
 tiger: 
 	$(COMPILER) $(PROGRAM) ./image_sequences/tiger/ ./image_sequences/aligned/tiger/ ./results/median_filter/tiger.jpg ./results/post_processed/tiger_post.jpg  align=true
 zoom: 
 	$(COMPILER) $(PROGRAM) ./image_sequences/zoom/ ./image_sequences/aligned/zoom/ ./results/median_filter/zoom.jpg ./results/post_processed/zoom_post.jpg align=true
+
+quantify: donald_level1 donald_level2 donald_level3 wallet shaky_desk6 shaky_desk12 tim6 tim12 sanitizer
 
 donald_level1:
 	$(COMPILER) $(PROGRAM) ./image_sequences/donald_level1/ ./image_sequences/aligned/donald_level1/ ./results/median_filter/donald_level1.jpg ./results/post_processed/donald_level1_post.jpg align=false

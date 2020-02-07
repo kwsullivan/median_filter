@@ -131,4 +131,4 @@ for y in range(correct.shape[0]):
             new_image[y,x,c] = np.clip(alpha*correct[y,x,c] + beta, 0, 255)
 
 #correct = cv2.addWeighted(correct, 30, np.zeros(correct.shape, correct.dtype), 0, 0)
-cv2.imwrite(sys.argv[4], cropped)
+cv2.imwrite(sys.argv[4], new_image)

@@ -17,7 +17,7 @@ def crop(image):
     print(x, x+w-1)
     print(y, y+h-1)
 
-    cropped = image[y:y+h+5, x:x+w+5]
+    cropped = image[y:y+h-1, x:x+w-1]
 
     return cropped
 

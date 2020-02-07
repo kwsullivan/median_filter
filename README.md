@@ -1,6 +1,8 @@
 # median filtering
 ## program description
-The following program will use median filtering to remove undesired moving objects from a series of photographs to retrieve the background image.
+The following program will use median filtering to remove undesired moving objects from a series of photographs to retrieve the background image.<br>
+A significant improvement to the algorithm is the implementation of algignment to the sequence of images before the sequence is processed through median filtering to produce significantly improved results.<br>
+The program also utilizes various post-processing techniques to improve the output for potential consumer application of the program.
 
 ## summary of test images
 | series name | degree of camera shake | degree of overlap | number of frames |
